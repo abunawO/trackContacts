@@ -1,17 +1,17 @@
 package com.ose_abunaw.ose_abunaw.repository;
 
-import java.util.Optional;
-
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import com.ose_abunaw.ose_abunaw.model.User;
 
-public class UserRepository {
+import java.util.Optional;
 
-    public Optional<User> findById(Long userId) {
-        return null;
-    }
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findById(Long userId); // Custom findById method
 
-    public User save(User user) {
-        return null;
-    }
+    // Correct the return type to match JpaRepository's save method
+    // User save(User user); // Custom save method
 
+    User findByEmail(String email);
 }

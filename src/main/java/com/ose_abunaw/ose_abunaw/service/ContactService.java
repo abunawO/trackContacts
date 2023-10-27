@@ -43,7 +43,8 @@ public class ContactService {
                 return user.get().getContacts();
             } else {
                 // Search by first name and/or last name for the user
-                return contactRepository.findByUserIdAndFirstNameContainingAndLastNameContaining(userId, firstName, lastName);
+                return contactRepository.findByUserIdAndFirstNameContainingAndLastNameContaining(userId, firstName,
+                        lastName);
             }
         } else {
             // Handle the case where the user with the given ID is not found
@@ -87,5 +88,9 @@ public class ContactService {
             // Handle the case where the user with the given ID is not found
             return false;
         }
+    }
+
+    public List<Contact> getAllContactsByUserId(Long id) {
+        return null;
     }
 }
