@@ -66,4 +66,11 @@ public class UserService {
     public User getSignedInUser() {
         return signedInUser;
     }
+
+    public void logout() {
+        // Clear the signed-in user when logging out
+        System.out.println("signing user out");
+        signedInUser = null;
+    }
+
 }

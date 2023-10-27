@@ -3,9 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>User Profile</title>
+    <style>
+        /* CSS to move the logout form to the right of the h1 tag */
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-button {
+            margin-left: 10px; /* Add margin to separate the button from the h1 */
+        }
+    </style>
 </head>
 <body>
-    <h1>User Profile</h1>
+    <div class="profile-header">
+        <h1>User Profile</h1>
+        <!-- Logout button form -->
+        <form th:action="@{/logout}" method="post" class="logout-button">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+    
     <p>Email: <span th:text="${user.email}"></span></p>
 
     <h2>Search Contacts</h2>

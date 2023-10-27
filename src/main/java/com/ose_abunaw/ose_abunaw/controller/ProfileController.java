@@ -73,4 +73,12 @@ public class ProfileController {
             return "error"; // You can define an error template for this case
         }
     }
+
+    @PostMapping("/logout")
+    public String logout() {
+        // Implement user logout logic, such as clearing the session
+        userService.logout(); // You need to define this method in your UserService
+
+        return "redirect:/users/signin"; // Redirect the user to the sign-in page after logout
+    }
 }
