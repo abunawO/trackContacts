@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.ose_abunaw.ose_abunaw.model.Contact;
 import com.ose_abunaw.ose_abunaw.model.User;
 import com.ose_abunaw.ose_abunaw.repository.ContactRepository;
+import com.ose_abunaw.ose_abunaw.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,45 +23,69 @@ public class ContactService {
         this.userRepository = userRepository;
     }
 
-    // Create a new contact
-    public Contact createContact(Contact contact, Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            contact.setUser(user);
+    public Contact createContact(Long userId, Contact contact) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            User existingUser = user.get();
+            contact.setUser(existingUser); // Associate the contact with the user
             return contactRepository.save(contact);
+        } else {
+            // Handle the case where the user with the given ID is not found
+            return null;
         }
-        return null; // Handle the case where the user does not exist.
     }
 
-    // Get a contact by ID
-    public Contact getContactById(Long id) {
-        Optional<Contact> contact = contactRepository.findById(id);
-        return contact.orElse(null);
-    }
-
-    // Get all contacts for a specific user
-    public List<Contact> getAllContactsByUser(Long userId) {
-        return contactRepository.findByUser(userRepository.findById(userId).orElse(null));
-    }
-
-    // Update a contact by ID
-    public Contact updateContact(Long id, Contact updatedContact) {
-        Optional<Contact> contact = contactRepository.findById(id);
-        if (contact.isPresent()) {
-            Contact existingContact = contact.get();
-            existingContact.setFirstName(updatedContact.getFirstName());
-            existingContact.setLastName(updatedContact.getLastName());
-            existingContact.setEmail(updatedContact.getEmail());
-            existingContact.setPhoneNumber(updatedContact.getPhoneNumber());
-            return contactRepository.save(existingContact);
+    public List<Contact> searchContacts(Long userId, String firstName, String lastName) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            if (firstName == null && lastName == null) {
+                // Return all contacts for the user if both first name and last name are null
+                return user.get().getContacts();
+            } else {
+                // Search by first name and/or last name for the user
+                return contactRepository.findByUserIdAndFirstNameContainingAndLastNameContaining(userId, firstName, lastName);
+            }
+        } else {
+            // Handle the case where the user with the given ID is not found
+            return null;
         }
-        return null;
     }
 
-    // Delete a contact by ID
-    public void deleteContact(Long id) {
-        contactRepository.deleteById(id);
+    public Contact updateContact(Long userId, Long contactId, Contact updatedContact) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            Optional<Contact> existingContact = contactRepository.findById(contactId);
+            if (existingContact.isPresent()) {
+                Contact contact = existingContact.get();
+                contact.setFirstName(updatedContact.getFirstName());
+                contact.setLastName(updatedContact.getLastName());
+                contact.setEmail(updatedContact.getEmail());
+                contact.setPhoneNumber(updatedContact.getPhoneNumber());
+                return contactRepository.save(contact);
+            } else {
+                // Handle the case where the contact with the given ID is not found
+                return null;
+            }
+        } else {
+            // Handle the case where the user with the given ID is not found
+            return null;
+        }
+    }
+
+    public boolean deleteContact(Long userId, Long contactId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            Optional<Contact> contact = contactRepository.findById(contactId);
+            if (contact.isPresent()) {
+                contactRepository.delete(contact.get());
+                return true;
+            } else {
+                // Handle the case where the contact with the given ID is not found
+                return false;
+            }
+        } else {
+            // Handle the case where the user with the given ID is not found
+            return false;
+        }
     }
 }
-

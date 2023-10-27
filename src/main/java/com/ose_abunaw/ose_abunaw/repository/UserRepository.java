@@ -1,4 +1,4 @@
-package com.ose_abunaw.ose_abunaw.service;
+package com.ose_abunaw.ose_abunaw.repository;
 
 import java.util.Optional;
 

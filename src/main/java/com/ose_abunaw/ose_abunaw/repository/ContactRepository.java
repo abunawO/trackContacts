@@ -14,4 +14,7 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     // For example, you can add a method to find contacts by user
 
     List<Contact> findByUser(User user);
+
+    List<Contact> findByUserIdAndFirstNameContainingAndLastNameContaining(Long userId, String firstName,
+            String lastName);
 }

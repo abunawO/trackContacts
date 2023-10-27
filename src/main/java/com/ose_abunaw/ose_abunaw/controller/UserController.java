@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.ose_abunaw.ose_abunaw.model.User;
+import com.ose_abunaw.ose_abunaw.service.UserService;
 
 @RestController
 @RequestMapping("/users")
