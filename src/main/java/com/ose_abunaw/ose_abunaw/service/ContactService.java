@@ -3,6 +3,8 @@ package com.ose_abunaw.ose_abunaw.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ose_abunaw.ose_abunaw.model.Contact;
 import com.ose_abunaw.ose_abunaw.model.User;
 import com.ose_abunaw.ose_abunaw.repository.ContactRepository;
@@ -55,6 +57,7 @@ public class ContactService {
     }
 
     public Contact updateContact(Long userId, Long contactId, Contact updatedContact) {
+        System.out.println("in updated contact service class");
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<Contact> existingContact = contactRepository.findById(contactId);
@@ -103,6 +106,14 @@ public class ContactService {
             // Handle the case where the user with the given ID is not found
             return Collections.emptyList();
         }
+    }
+
+    public Contact getContactById(Long contactId) {
+        System.out.println("in getContactById " + contactId);
+        Contact contact = contactRepository.findById(contactId).orElse(null);
+
+        System.out.println("in getContactById " + contact.getFirstName());
+        return contact;
     }
 
 }

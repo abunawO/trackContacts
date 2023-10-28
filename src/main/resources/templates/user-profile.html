@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>User Profile</title>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         /* CSS to move the logout form to the right of the h1 tag */
         .profile-header {
@@ -72,7 +74,7 @@
         <button type="submit">Search</button>
     </form>
 
-        <!-- Display the contact list -->
+    <!-- Display the contact list -->
     <h2>Contact List</h2>
     <table>
         <thead>
@@ -81,6 +83,8 @@
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Phone Number</th>
+                <th>Contact ID</th> <!-- Add a new column for contact ID -->
+                <th>Actions</th> <!-- Add a new column for actions -->
             </tr>
         </thead>
         <tbody>
@@ -91,6 +95,10 @@
                     <td th:text="${contact.lastName}">Last Name</td>
                     <td th:text="${contact.email}">Email</td>
                     <td th:text="${contact.phoneNumber}">Phone Number</td>
+                    <td th:text="${contact.id}">Contact ID</td> <!-- Display contact ID -->
+                    <td>
+                        <button th:attr="data-contact-id=${contact.id}" onclick="populateEditForm(this.getAttribute('data-contact-id'))">Edit</button>
+                    </td>
                 </tr>
             </th:block>
             <th:block th:if="${not #lists.isEmpty(filteredContacts)}">
@@ -100,9 +108,13 @@
                     <td th:text="${contact.lastName}">Last Name</td>
                     <td th:text="${contact.email}">Email</td>
                     <td th:text="${contact.phoneNumber}">Phone Number</td>
+                    <td th:text="${contact.id}">Contact ID</td> <!-- Display contact ID -->
+                    <td>
+                        <button th:attr="data-contact-id=${contact.id}" onclick="populateEditForm(this.getAttribute('data-contact-id'))">Edit</button>
+                    </td>
                 </tr>
             </th:block>
-        </tbody>        
+        </tbody>
     </table>
 
     
@@ -128,6 +140,28 @@
             </form>
         </div>
     </div>
+
+    <!-- Create Edit Contact Form Modal -->
+    <div id="edit-contact-modal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeEditContactForm()" class="close">&times;</span>
+            <h2>Edit Contact</h2>
+            <form id="edit-contact-form" th:action="@{/updateContact}" method="post">
+                <input type="hidden" id="edit-contact-id" name="contactId">
+                <label for="edit-firstName">First Name:</label>
+                <input type="text" id="edit-firstName" name="firstName" required><br>
+                <label for="edit-lastName">Last Name:</label>
+                <input type="text" id="edit-lastName" name="lastName" required><br>
+                <label for="edit-email">Email:</label>
+                <input type="email" id="edit-email" name="email" required><br>
+                <label for="edit-phone">Phone Number:</label>
+                <input type="text" id="edit-phone" name="phone" required><br>
+                <button type="button" onclick="closeEditContactForm()">Cancel</button>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
     
     <script>
         function openContactForm() {
@@ -139,6 +173,50 @@
             var modal = document.getElementById("contact-form-modal");
             modal.style.display = "none";
         }
+
+        // Function to open the edit contact form
+        function editContact(contactId) {
+            var modal = document.getElementById("edit-contact-modal");
+            modal.style.display = "block";
+
+            // Fetch contact details and populate the edit form (you can use AJAX)
+            // For simplicity, I'm assuming you have a JavaScript function to populate the form
+            // with contact details, and the form HTML is in a hidden div with the id "edit-contact-form".
+        }
+
+        // Function to close the edit contact form
+        function closeEditContactForm() {
+            var modal = document.getElementById("edit-contact-modal");
+            modal.style.display = "none";
+        }
+
+        /* Function to open the edit contact modal and populate it */
+        function populateEditForm(contactId) {
+            var modal = document.getElementById("edit-contact-modal");
+            modal.style.display = "block";
+
+            // Set the contact ID in the hidden input field
+            document.getElementById("edit-contact-id").value = contactId;
+            debugger;
+
+            // Fetch contact details using AJAX and populate the form fields
+            $.ajax({
+                url: '/contact/getContactDetails/' + contactId, // Include the contactId in the URL
+                method: 'GET',
+                success: function (data) {
+                    document.getElementById("edit-firstName").value = data.firstName;
+                    document.getElementById("edit-lastName").value = data.lastName;
+                    document.getElementById("edit-email").value = data.email;
+                    document.getElementById("edit-phone").value = data.phoneNumber;
+                },
+                error: function (error) {
+                    debugger;
+                    console.log("Error fetching contact details: " + error);
+                }
+            });
+
+        }
+
     </script>
 </body>
 </html>

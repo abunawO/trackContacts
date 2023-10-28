@@ -1,5 +1,7 @@
 package com.ose_abunaw.ose_abunaw.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +14,7 @@ public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String firstName;
     private String lastName;
     private String email;
@@ -19,6 +22,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonInclude(JsonInclude.Include.NON_NULL) // Exclude this property if null
     private User user;
 
     // Constructors
@@ -81,4 +85,3 @@ public class Contact {
         this.user = user;
     }
 }
-

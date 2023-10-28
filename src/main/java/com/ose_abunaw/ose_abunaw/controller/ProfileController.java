@@ -116,4 +116,41 @@ public class ProfileController {
         }
     }
 
+    // Add a new mapping for updating a contact
+    @PostMapping("/updateContact")
+    public String updateContact(
+            @RequestParam("contactId") Long contactId,
+            @RequestParam("firstName") String firstName,
+            @RequestParam("lastName") String lastName,
+            @RequestParam("email") String email,
+            @RequestParam("phone") String phone,
+            Model model) {
+        System.out.println("in updated contact method");
+        // Retrieve the signed-in user's information
+        User user = userService.getSignedInUser();
+
+        if (user != null) {
+            // Update the contact with the provided details
+            Contact updatedContact = new Contact(firstName, lastName, email, phone);
+            updatedContact.setId(contactId); // Set the ID of the contact to be updated
+
+            // Call the ContactService to update the contact
+            Contact updated = contactService.updateContact(user.getId(), contactId, updatedContact);
+
+            System.out.println("contact has been updated");
+            if (updated != null) {
+                System.out.println("sending back to profile");
+                // Redirect back to the user profile page
+                return "redirect:/user/profile";
+            } else {
+                // Handle the case where the contact with the given ID is not found
+                return "error"; // You can define an error template for this case
+            }
+
+        } else {
+            // Handle the case where the user is not signed in
+            return "error"; // You can define an error template for this case
+        }
+    }
+
 }
