@@ -8,6 +8,7 @@ import com.ose_abunaw.ose_abunaw.model.User;
 import com.ose_abunaw.ose_abunaw.repository.ContactRepository;
 import com.ose_abunaw.ose_abunaw.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ public class ContactService {
     }
 
     public Contact createContact(Long userId, Contact contact) {
+        System.out.println("In contact service class");
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             User existingUser = user.get();
@@ -90,7 +92,17 @@ public class ContactService {
         }
     }
 
-    public List<Contact> getAllContactsByUserId(Long id) {
-        return null;
+    public List<Contact> getAllContactsByUserId(Long userId) {
+        System.out.println("in getAllContactsByUserId");
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            User existingUser = user.get();
+            System.out.println("contacts: " + existingUser.getContacts());
+            return existingUser.getContacts();
+        } else {
+            // Handle the case where the user with the given ID is not found
+            return Collections.emptyList();
+        }
     }
+
 }

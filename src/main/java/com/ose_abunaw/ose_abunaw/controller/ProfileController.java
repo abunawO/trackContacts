@@ -29,17 +29,15 @@ public class ProfileController {
     @GetMapping("/user/profile")
     public String showUserProfile(Model model) {
         // Retrieve the signed-in user's information
-        System.out.println("in profile controller");
-        User user = userService.getSignedInUser(); // Implement this method in your UserService
+        User user = userService.getSignedInUser();
 
         if (user != null) {
             model.addAttribute("user", user);
 
             // Initially, load all user's contacts
             List<Contact> allContacts = contactService.getAllContactsByUserId(user.getId());
-            model.addAttribute("filteredContacts", allContacts);
+            model.addAttribute("allContacts", allContacts); // Add all contacts to the model
 
-            System.out.println("rotuine to User Profile Page");
             return "user-profile"; // Return the HTML template
         } else {
             // Handle the case where the user is not signed in
@@ -81,4 +79,41 @@ public class ProfileController {
 
         return "redirect:/users/signin"; // Redirect the user to the sign-in page after logout
     }
+
+    @PostMapping("/createContact")
+    public String createContact(
+            @RequestParam("firstName") String firstName,
+            @RequestParam("lastName") String lastName,
+            @RequestParam("email") String email,
+            @RequestParam("phone") String phone,
+            Model model) {
+
+        System.out.println("in createdUser method");
+        // Retrieve the signed-in user's information
+        User user = userService.getSignedInUser();
+
+        if (user != null) {
+            // Create a new contact
+            Contact newContact = new Contact(firstName, lastName, email, phone);
+            System.out.println("created new contact");
+
+            // Save the new contact using the ContactService
+            Contact createdContact = contactService.createContact(user.getId(), newContact);
+
+            System.out.println("saved new contact");
+            if (createdContact != null) {
+                System.out.println("going back to frofile");
+                // Redirect back to the user profile page
+                return "redirect:/user/profile";
+            } else {
+                System.out.println("something happened");
+                // Handle the case where the user with the given ID is not found
+                return "error"; // You can define an error template for this case
+            }
+        } else {
+            // Handle the case where the user is not signed in
+            return "error"; // You can define an error template for this case
+        }
+    }
+
 }

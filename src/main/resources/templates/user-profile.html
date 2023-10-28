@@ -14,6 +14,44 @@
         .logout-button {
             margin-left: 10px; /* Add margin to separate the button from the h1 */
         }
+
+        .fab {
+            background-color: #1877f2;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            cursor: pointer;
+            box-shadow: 0px 0px 10px 0px #ccc;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+        }
     </style>
 </head>
 <body>
@@ -34,7 +72,7 @@
         <button type="submit">Search</button>
     </form>
 
-    <!-- Display the search results if any -->
+        <!-- Display the contact list -->
     <h2>Contact List</h2>
     <table>
         <thead>
@@ -46,15 +84,61 @@
             </tr>
         </thead>
         <tbody>
-            <th:block th:each="contact : ${filteredContacts}">
-                <tr>
+            <th:block th:if="${#lists.isEmpty(filteredContacts)}">
+                <!-- Show all contacts when filteredContacts is empty -->
+                <tr th:each="contact : ${allContacts}">
                     <td th:text="${contact.firstName}">First Name</td>
                     <td th:text="${contact.lastName}">Last Name</td>
                     <td th:text="${contact.email}">Email</td>
                     <td th:text="${contact.phoneNumber}">Phone Number</td>
                 </tr>
             </th:block>
-        </tbody>
+            <th:block th:if="${not #lists.isEmpty(filteredContacts)}">
+                <!-- Show filtered contacts when filteredContacts is not empty -->
+                <tr th:each="contact : ${filteredContacts}">
+                    <td th:text="${contact.firstName}">First Name</td>
+                    <td th:text="${contact.lastName}">Last Name</td>
+                    <td th:text="${contact.email}">Email</td>
+                    <td th:text="${contact.phoneNumber}">Phone Number</td>
+                </tr>
+            </th:block>
+        </tbody>        
     </table>
+
+    
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="openContactForm()">+</button>
+    
+    <!-- Create New Contact Form Modal -->
+    <div id="contact-form-modal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeContactForm()" class="close">&times;</span>
+            <h2>Create New Contact</h2>
+            <form th:action="@{/createContact}" method="post">
+                <label for="firstName">First Name:</label>
+                <input type="text" name="firstName" required><br>
+                <label for="lastName">Last Name:</label>
+                <input type="text" name="lastName" required><br>
+                <label for="email">Email:</label>
+                <input type="email" name="email" required><br>
+                <label for="phone">Phone Number:</label>
+                <input type="text" name="phone" required><br>
+                <button type="submit">Create</button>
+                <button type="button" onclick="closeContactForm()">Cancel</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function openContactForm() {
+            var modal = document.getElementById("contact-form-modal");
+            modal.style.display = "block";
+        }
+        
+        function closeContactForm() {
+            var modal = document.getElementById("contact-form-modal");
+            modal.style.display = "none";
+        }
+    </script>
 </body>
 </html>
