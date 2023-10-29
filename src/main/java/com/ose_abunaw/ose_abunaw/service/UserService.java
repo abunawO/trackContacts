@@ -1,12 +1,14 @@
 package com.ose_abunaw.ose_abunaw.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.ose_abunaw.ose_abunaw.model.User;
 import com.ose_abunaw.ose_abunaw.model.Profile;
 import com.ose_abunaw.ose_abunaw.repository.ProfileRepository;
 import com.ose_abunaw.ose_abunaw.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
+
+import java.util.Optional;
 
 @Service
 @SessionScope
@@ -62,6 +64,11 @@ public class UserService {
 
     public User getSignedInUser() {
         return signedInUser;
+    }
+
+    public User getUserById(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        return userOptional.orElse(null);
     }
 
     public void logout() {

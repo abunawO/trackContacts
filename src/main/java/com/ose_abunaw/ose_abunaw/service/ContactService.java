@@ -28,8 +28,10 @@ public class ContactService {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             User existingUser = user.get();
-            contact.setUser(existingUser); // Associate the contact with the user
-            return contactRepository.save(contact);
+            // You can't modify a contact, so create a new one
+            Contact newContact = new Contact(null, contact.getFirstName(), contact.getLastName(),
+                    contact.getEmail(), contact.getPhoneNumber(), existingUser);
+            return contactRepository.save(newContact);
         } else {
             // Handle the case where the user with the given ID is not found
             return null;
@@ -49,7 +51,7 @@ public class ContactService {
             }
         } else {
             // Handle the case where the user with the given ID is not found
-            return null;
+            return Collections.emptyList(); // Return an empty list
         }
     }
 
@@ -58,12 +60,12 @@ public class ContactService {
         if (user.isPresent()) {
             Optional<Contact> existingContact = contactRepository.findById(contactId);
             if (existingContact.isPresent()) {
+                // You can't modify a contact, so create a new one
                 Contact contact = existingContact.get();
-                contact.setFirstName(updatedContact.getFirstName());
-                contact.setLastName(updatedContact.getLastName());
-                contact.setEmail(updatedContact.getEmail());
-                contact.setPhoneNumber(updatedContact.getPhoneNumber());
-                return contactRepository.save(contact);
+                Contact newContact = new Contact(contact.getId(), updatedContact.getFirstName(),
+                        updatedContact.getLastName(),
+                        updatedContact.getEmail(), updatedContact.getPhoneNumber(), user.get());
+                return contactRepository.save(newContact);
             } else {
                 // Handle the case where the contact with the given ID is not found
                 return null;
@@ -103,13 +105,6 @@ public class ContactService {
     }
 
     public Contact getContactById(Long contactId) {
-        Contact contact = contactRepository.findById(contactId).orElse(null);
-        if (contact != null) {
-            // Contact found
-            return contact;
-        } else {
-            return null;
-        }
+        return contactRepository.findById(contactId).orElse(null);
     }
-
 }

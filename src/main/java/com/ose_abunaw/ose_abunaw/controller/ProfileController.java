@@ -92,7 +92,7 @@ public class ProfileController {
 
         if (user != null) {
             // Create a new contact
-            Contact newContact = new Contact(firstName, lastName, email, phone);
+            Contact newContact = new Contact(null, firstName, lastName, email, phone, user);
 
             // Save the new contact using the ContactService
             Contact createdContact = contactService.createContact(user.getId(), newContact);
@@ -125,7 +125,7 @@ public class ProfileController {
 
         if (user != null) {
             // Update the contact with the provided details
-            Contact updatedContact = new Contact(firstName, lastName, email, phone);
+            Contact updatedContact = new Contact(contactId, firstName, lastName, email, phone, user);
             updatedContact.setId(contactId); // Set the ID of the contact to be updated
 
             // Call the ContactService to update the contact

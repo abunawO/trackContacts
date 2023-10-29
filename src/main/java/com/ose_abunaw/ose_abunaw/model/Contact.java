@@ -28,15 +28,18 @@ public class Contact {
     @JsonInclude(JsonInclude.Include.NON_NULL) // Exclude this property if null
     private User user;
 
-    // Constructors
+    // Default no-argument constructor
     public Contact() {
     }
 
-    public Contact(String firstName, String lastName, String email, String phoneNumber) {
+    // Constructor with all fields
+    public Contact(Long id, String firstName, String lastName, String email, String phoneNumber, User user) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.user = user;
     }
 
     // Getters and Setters
@@ -87,4 +90,36 @@ public class Contact {
     public void setUser(User user) {
         this.user = user;
     }
+
+    // Builder pattern
+    public static class Builder {
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String phoneNumber;
+        private User user;
+
+        public Builder(String firstName, String lastName, String email, String phoneNumber) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+            this.phoneNumber = phoneNumber;
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public Contact build() {
+            return new Contact(id, firstName, lastName, email, phoneNumber, user);
+        }
+    }
+
 }

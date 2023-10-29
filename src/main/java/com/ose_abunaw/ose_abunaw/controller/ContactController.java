@@ -1,6 +1,7 @@
 package com.ose_abunaw.ose_abunaw.controller;
 
 import java.util.List;
+
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,19 +12,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.ose_abunaw.ose_abunaw.model.Contact;
 import com.ose_abunaw.ose_abunaw.service.ContactService;
 import com.ose_abunaw.ose_abunaw.service.UserService;
+import com.ose_abunaw.ose_abunaw.model.User;
 
 @Controller
 @RequestMapping("/contact")
 public class ContactController {
 
     private final ContactService contactService;
+    private final UserService userService;
 
     @Autowired
     public ContactController(ContactService contactService, UserService userService) {
         this.contactService = contactService;
+        this.userService = userService;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -34,11 +39,16 @@ public class ContactController {
             @RequestParam("email") String email,
             @RequestParam("phoneNumber") String phoneNumber) {
 
-        Contact newContact = new Contact();
-        newContact.setFirstName(firstName);
-        newContact.setLastName(lastName);
-        newContact.setEmail(email);
-        newContact.setPhoneNumber(phoneNumber);
+        // Fetch the user
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return "error"; // Handle user not found
+        }
+
+        // Create a new contact using the builder pattern
+        Contact newContact = new Contact.Builder(firstName, lastName, email, phoneNumber)
+                .user(user) // Associate the contact with the user
+                .build();
 
         Contact createdContact = contactService.createContact(userId, newContact);
 
@@ -73,12 +83,8 @@ public class ContactController {
             @RequestParam("email") String email,
             @RequestParam("phoneNumber") String phoneNumber) {
 
-        System.out.println("in /update method " + contactId);
-        Contact updatedContact = new Contact();
-        updatedContact.setFirstName(firstName);
-        updatedContact.setLastName(lastName);
-        updatedContact.setEmail(email);
-        updatedContact.setPhoneNumber(phoneNumber);
+        Contact updatedContact = new Contact.Builder(firstName, lastName, email, phoneNumber)
+                .build();
 
         Contact updated = contactService.updateContact(userId, contactId, updatedContact);
 
@@ -118,5 +124,4 @@ public class ContactController {
             return ResponseEntity.notFound().build(); // Contact not found, return status 404
         }
     }
-
 }
