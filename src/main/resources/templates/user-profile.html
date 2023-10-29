@@ -28,6 +28,7 @@
                 <input type="text" name="firstName" placeholder="First Name" th:value="${searchFirstName}">
                 <input type="text" name="lastName" placeholder="Last Name" th:value="${searchLastName}">
                 <button type="submit">Search</button>
+                <button type="submit" onclick="resetForm()">Reset</button> <!-- Reset button -->
             </form>
         </div>
 
@@ -126,6 +127,15 @@
         </div>
 
         <script>
+            // Function to reset the form and send a submit request
+            function resetForm() {
+                var inputFirstName = form.querySelector('input[name="firstName"]');
+                var inputLastName = form.querySelector('input[name="lastName"]');
+                
+                inputFirstName.value = ''; // Clear the First Name field
+                inputLastName.value = '';  // Clear the Last Name field
+            }
+
             function openContactForm() {
                 var modal = document.getElementById("contact-form-modal");
                 modal.style.display = "block";
