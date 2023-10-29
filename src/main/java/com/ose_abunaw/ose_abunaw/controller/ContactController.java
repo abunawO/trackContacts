@@ -84,6 +84,7 @@ public class ContactController {
             @RequestParam("email") String email,
             @RequestParam("phoneNumber") String phoneNumber) {
 
+        System.out.println("in /update method " + contactId);
         Contact updatedContact = new Contact();
         updatedContact.setFirstName(firstName);
         updatedContact.setLastName(lastName);
@@ -108,12 +109,14 @@ public class ContactController {
             @RequestParam("userId") Long userId,
             @RequestParam("contactId") Long contactId) {
 
+        System.out.println("in /delete method " + contactId);
+
         boolean deleted = contactService.deleteContact(userId, contactId);
 
         if (deleted) {
             // Handle success (e.g., show a success message or redirect to a confirmation
             // page
-            return "success";
+            return "redirect:/user/profile";
         } else {
             // Handle failure (e.g., show an error message or redirect to an error page)
             return "error";

@@ -79,6 +79,7 @@ public class ContactService {
     }
 
     public boolean deleteContact(Long userId, Long contactId) {
+        System.out.println("in service /deleteContact method " + contactId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<Contact> contact = contactRepository.findById(contactId);
