@@ -1,9 +1,9 @@
 package com.ose_abunaw.ose_abunaw.controller;
 
-import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.ose_abunaw.ose_abunaw.model.Contact;
@@ -27,96 +27,98 @@ public class ContactController {
     }
 
     @PostMapping("/create")
-    public String createContact(
+    public ResponseEntity<String> createContact(
             @RequestParam("userId") Long userId,
             @RequestParam("firstName") String firstName,
             @RequestParam("lastName") String lastName,
             @RequestParam("email") String email,
             @RequestParam("phoneNumber") String phoneNumber) {
+        try {
+            // Fetch the user
+            User user = userService.getUserById(userId);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
 
-        // Fetch the user
-        User user = userService.getUserById(userId);
-        if (user == null) {
-            return "error"; // Handle user not found
-        }
+            // Create a new contact using the builder pattern
+            Contact newContact = new Contact.Builder(firstName, lastName, email, phoneNumber)
+                    .user(user) // Associate the contact with the user
+                    .build();
 
-        // Create a new contact using the builder pattern
-        Contact newContact = new Contact.Builder(firstName, lastName, email, phoneNumber)
-                .user(user) // Associate the contact with the user
-                .build();
+            Contact createdContact = contactService.createContact(userId, newContact);
 
-        Contact createdContact = contactService.createContact(userId, newContact);
-
-        if (createdContact != null) {
-            // Handle success
-            return "success";
-        } else {
-            // Handle failure
-            return "error";
+            if (createdContact != null) {
+                return ResponseEntity.status(HttpStatus.CREATED).body("Contact created successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create contact");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create contact");
         }
     }
 
     @GetMapping("/search")
-    public String searchContacts(
+    public ResponseEntity<List<Contact>> searchContacts(
             @RequestParam("userId") Long userId,
             @RequestParam(value = "firstName", required = false) String firstName,
-            @RequestParam(value = "lastName", required = false) String lastName,
-            Model model) {
-
-        List<Contact> foundContacts = contactService.searchContacts(userId, firstName, lastName);
-        model.addAttribute("contacts", foundContacts);
-
-        return "contact-list"; // Return a view to display search results
+            @RequestParam(value = "lastName", required = false) String lastName) {
+        try {
+            List<Contact> foundContacts = contactService.searchContacts(userId, firstName, lastName);
+            return ResponseEntity.ok(foundContacts);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/update")
-    public String updateContact(
+    public ResponseEntity<String> updateContact(
             @RequestParam("userId") Long userId,
             @RequestParam("contactId") Long contactId,
             @RequestParam("firstName") String firstName,
             @RequestParam("lastName") String lastName,
             @RequestParam("email") String email,
             @RequestParam("phoneNumber") String phoneNumber) {
+        try {
+            Contact updatedContact = new Contact.Builder(firstName, lastName, email, phoneNumber)
+                    .build();
 
-        Contact updatedContact = new Contact.Builder(firstName, lastName, email, phoneNumber)
-                .build();
+            Contact updated = contactService.updateContact(userId, contactId, updatedContact);
 
-        Contact updated = contactService.updateContact(userId, contactId, updatedContact);
-
-        if (updated != null) {
-            // Handle success
-            return "redirect:/user/profile";
-        } else {
-            // Handle failure
-            return "error";
+            if (updated != null) {
+                return ResponseEntity.status(HttpStatus.OK).body("Contact updated successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update contact");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update contact");
         }
     }
 
     @PostMapping("/delete")
-    public String deleteContact(
+    public ResponseEntity<String> deleteContact(
             @RequestParam("userId") Long userId,
             @RequestParam("contactId") Long contactId) {
+        try {
+            boolean deleted = contactService.deleteContact(userId, contactId);
 
-        boolean deleted = contactService.deleteContact(userId, contactId);
-
-        if (deleted) {
-            // Handle success
-            return "redirect:/user/profile";
-        } else {
-            // Handle failure
-            return "error";
+            if (deleted) {
+                return ResponseEntity.status(HttpStatus.OK).body("Contact deleted successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete contact");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete contact");
         }
     }
 
     @GetMapping("/getContactDetails/{contactId}")
-    @ResponseBody
     public ResponseEntity<Contact> getContactDetails(@PathVariable Long contactId) {
         Contact contact = contactService.getContactById(contactId);
 
         if (contact != null) {
-            return ResponseEntity.ok(contact); // Contact found, return it with status 200
+            return ResponseEntity.ok(contact);
         } else {
-            return ResponseEntity.notFound().build(); // Contact not found, return status 404
+            return ResponseEntity.notFound().build();
         }
     }
 }
