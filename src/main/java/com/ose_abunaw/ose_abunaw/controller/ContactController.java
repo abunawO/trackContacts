@@ -1,22 +1,17 @@
 package com.ose_abunaw.ose_abunaw.controller;
 
-import java.util.List;
-
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import com.ose_abunaw.ose_abunaw.model.Contact;
 import com.ose_abunaw.ose_abunaw.service.ContactService;
 import com.ose_abunaw.ose_abunaw.service.UserService;
 import com.ose_abunaw.ose_abunaw.model.User;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/contact")
@@ -31,7 +26,7 @@ public class ContactController {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
     public String createContact(
             @RequestParam("userId") Long userId,
             @RequestParam("firstName") String firstName,
@@ -61,7 +56,7 @@ public class ContactController {
         }
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @GetMapping("/search")
     public String searchContacts(
             @RequestParam("userId") Long userId,
             @RequestParam(value = "firstName", required = false) String firstName,
@@ -74,7 +69,7 @@ public class ContactController {
         return "contact-list"; // Return a view to display search results
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @PostMapping("/update")
     public String updateContact(
             @RequestParam("userId") Long userId,
             @RequestParam("contactId") Long contactId,
@@ -97,7 +92,7 @@ public class ContactController {
         }
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
     public String deleteContact(
             @RequestParam("userId") Long userId,
             @RequestParam("contactId") Long contactId) {
