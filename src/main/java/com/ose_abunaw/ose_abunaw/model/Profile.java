@@ -9,11 +9,12 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Associations
     @OneToOne
     @JoinColumn(name = "user_id") // Create a foreign key to link profiles to users
     private User user;
 
-    // Additional profile attributes
+    // Profile attributes
     private String fullName;
     private String address;
 

@@ -3,8 +3,6 @@ package com.ose_abunaw.ose_abunaw.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ose_abunaw.ose_abunaw.model.Contact;
 import com.ose_abunaw.ose_abunaw.model.User;
 import com.ose_abunaw.ose_abunaw.repository.ContactRepository;
@@ -27,7 +25,6 @@ public class ContactService {
     }
 
     public Contact createContact(Long userId, Contact contact) {
-        System.out.println("In contact service class");
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             User existingUser = user.get();
@@ -57,7 +54,6 @@ public class ContactService {
     }
 
     public Contact updateContact(Long userId, Long contactId, Contact updatedContact) {
-        System.out.println("in updated contact service class");
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<Contact> existingContact = contactRepository.findById(contactId);
@@ -79,7 +75,6 @@ public class ContactService {
     }
 
     public boolean deleteContact(Long userId, Long contactId) {
-        System.out.println("in service /deleteContact method " + contactId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<Contact> contact = contactRepository.findById(contactId);
@@ -97,11 +92,9 @@ public class ContactService {
     }
 
     public List<Contact> getAllContactsByUserId(Long userId) {
-        System.out.println("in getAllContactsByUserId");
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             User existingUser = user.get();
-            System.out.println("contacts: " + existingUser.getContacts());
             return existingUser.getContacts();
         } else {
             // Handle the case where the user with the given ID is not found
@@ -110,11 +103,13 @@ public class ContactService {
     }
 
     public Contact getContactById(Long contactId) {
-        System.out.println("in getContactById " + contactId);
         Contact contact = contactRepository.findById(contactId).orElse(null);
-
-        System.out.println("in getContactById " + contact.getFirstName());
-        return contact;
+        if (contact != null) {
+            // Contact found
+            return contact;
+        } else {
+            return null;
+        }
     }
 
 }

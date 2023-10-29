@@ -7,18 +7,15 @@ import com.ose_abunaw.ose_abunaw.model.User;
 import java.util.List;
 import java.util.Optional;
 
+//ContactRepository to perfom various database operations
 public interface ContactRepository extends JpaRepository<Contact, Long> {
-    // List<Contact> findByFirstNameContainingAndLastNameContaining(String
-    // firstName, String lastName);
-
-    // You can define custom query methods here if needed
-    // For example, you can add a method to find contacts by user
-
+    // method to find contact by user
     List<Contact> findByUser(User user);
 
+    // method to find contact by userId, FirstName, LastName
     List<Contact> findByUserIdAndFirstNameContainingAndLastNameContaining(Long userId, String firstName,
             String lastName);
 
-    // Add a method to find a contact by its ID
+    // method to find a contact by its ID
     Optional<Contact> findById(Long contactId);
 }

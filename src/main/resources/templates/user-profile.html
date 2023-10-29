@@ -353,10 +353,6 @@
         function editContact(contactId) {
             var modal = document.getElementById("edit-contact-modal");
             modal.style.display = "block";
-
-            // Fetch contact details and populate the edit form (you can use AJAX)
-            // For simplicity, I'm assuming you have a JavaScript function to populate the form
-            // with contact details, and the form HTML is in a hidden div with the id "edit-contact-form".
         }
 
         // Function to close the edit contact form
@@ -396,11 +392,11 @@
                     url: '/contact/delete', // Endpoint to delete the contact
                     method: 'POST',
                     data: {
-                        userId: userId, // Replace with the actual user ID
+                        userId: userId,
                         contactId: contactId
                     },
                     success: function () {
-                        // Contact deleted successfully, you can reload the page or update the UI as needed
+                        // Contact deleted successfully, reload the page or update the UI as needed
                         location.reload(); // Reloading the page for simplicity
                     },
                     error: function (error) {

@@ -16,8 +16,10 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "users") // Specify a different table name
+@Table(name = "users") // Specifying a different table name
 public class User {
+
+    // User attributes
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,9 +30,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    // Associations
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Contact> contacts;
+    private List<Contact> contacts; // Add the one-to-many association with Contact
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Profile profile; // Add the one-to-one association with Profile

@@ -19,9 +19,4 @@ public class OseAbunawApplication {
     public String showSignInForm() {
         return "signin"; // Return the "signin" HTML template as the index page
     }
-
-    @GetMapping("/signup")
-    public String showSignUpForm() {
-        return "signup"; // Return the "signup" HTML template
-    }
 }

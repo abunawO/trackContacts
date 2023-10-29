@@ -56,11 +56,20 @@
         button:hover {
             background-color: #166fe5;
         }
+
+        .error {
+            color: #ff0000; /* Red color for the error message */
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Sign Up</h1>
+        <!-- Display the error message if it exists -->
+        <div th:if="${error}" class="error">
+            <p th:text="${error}"></p>
+        </div>
         <form th:action="@{/users/signup}" method="post">
             <label for="email">Email:</label>
             <input type="email" name="email" required>

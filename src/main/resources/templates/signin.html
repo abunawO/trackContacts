@@ -54,11 +54,20 @@
             color: #3498db;
             text-decoration: none;
         }
+
+        .error {
+            color: #ff0000; /* Red color for the error message */
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Sign In</h1>
+        <!-- Display the error message if it exists -->
+        <div th:if="${error}" class="error">
+            <p th:text="${error}"></p>
+        </div>
         <form th:action="@{/users/signin}" method="post">
             <label for="email">Email:</label>
             <input type="email" name="email" required>

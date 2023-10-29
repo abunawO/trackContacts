@@ -11,6 +11,8 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Contact {
+
+    // Contact attributes
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +22,7 @@ public class Contact {
     private String email;
     private String phoneNumber;
 
+    // Associations
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonInclude(JsonInclude.Include.NON_NULL) // Exclude this property if null

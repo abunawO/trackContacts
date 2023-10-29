@@ -25,19 +25,16 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        System.out.println(user.getEmail());
         return userRepository.save(user);
     }
 
     public User signIn(String email, String password) {
         // Query the database for a user with the provided email
-        System.out.println(email);
         User user = userRepository.findByEmail(email);
 
         if (user != null && user.getPassword().equals(password)) {
             // User credentials are valid, store the signed-in user in the session
             signedInUser = user;
-            System.out.println("signed in user: " + signedInUser.getEmail());
             return user;
         }
 
@@ -69,7 +66,6 @@ public class UserService {
 
     public void logout() {
         // Clear the signed-in user when logging out
-        System.out.println("signing user out");
         signedInUser = null;
     }
 
