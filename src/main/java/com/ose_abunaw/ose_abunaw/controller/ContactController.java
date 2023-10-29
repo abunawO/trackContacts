@@ -41,9 +41,7 @@ public class ContactController {
             }
 
             // Create a new contact using the builder pattern
-            Contact newContact = new Contact.Builder(firstName, lastName, email, phoneNumber)
-                    .user(user) // Associate the contact with the user
-                    .build();
+            Contact newContact = buildContact(firstName, lastName, email, phoneNumber, user);
 
             Contact createdContact = contactService.createContact(userId, newContact);
 
@@ -79,8 +77,7 @@ public class ContactController {
             @RequestParam("email") String email,
             @RequestParam("phoneNumber") String phoneNumber) {
         try {
-            Contact updatedContact = new Contact.Builder(firstName, lastName, email, phoneNumber)
-                    .build();
+            Contact updatedContact = buildContact(firstName, lastName, email, phoneNumber, null);
 
             Contact updated = contactService.updateContact(userId, contactId, updatedContact);
 
@@ -102,7 +99,7 @@ public class ContactController {
             boolean deleted = contactService.deleteContact(userId, contactId);
 
             if (deleted) {
-                return ResponseEntity.status(HttpStatus.OK).body("Contact deleted successfully");
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Contact deleted successfully");
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete contact");
             }
@@ -120,5 +117,12 @@ public class ContactController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // Private utility method to create a Contact object to reduce redundancy
+    private Contact buildContact(String firstName, String lastName, String email, String phoneNumber, User user) {
+        return new Contact.Builder(firstName, lastName, email, phoneNumber)
+                .user(user) // Associate the contact with the user
+                .build();
     }
 }
