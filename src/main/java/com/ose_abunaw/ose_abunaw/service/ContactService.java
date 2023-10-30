@@ -1,6 +1,5 @@
 package com.ose_abunaw.ose_abunaw.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ose_abunaw.ose_abunaw.model.Contact;
@@ -18,7 +17,6 @@ public class ContactService {
     private final ContactRepository contactRepository;
     private final UserRepository userRepository;
 
-    @Autowired
     public ContactService(ContactRepository contactRepository, UserRepository userRepository) {
         this.contactRepository = contactRepository;
         this.userRepository = userRepository;

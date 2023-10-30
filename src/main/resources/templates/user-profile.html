@@ -12,7 +12,7 @@
         <div class="profile-header">
             <h1>User Profile</h1>
             <!-- Logout button form -->
-            <form th:action="@{/logout}" method="post" class="logout-button">
+            <form th:action="@{/user/profile/logout}" method="post" class="logout-button">
                 <button type="submit">Logout</button>
             </form>
         </div>
@@ -22,9 +22,25 @@
             <p>Email: <span th:text="${user.email}"></span></p>
         </div>
 
+        <div class="messages">
+            <!-- Display success message -->
+            <div th:if="${successMessage}" class="message success-message">
+                <span class="close-button" onclick="closeMessage(this)">x</span>
+                <p th:text="${successMessage}"></p>
+            </div>
+        
+            <!-- Display error message -->
+            <div th:if="${errorMessage}" class="message error-message">
+                <span class="close-button" onclick="closeMessage(this)">x</span>
+                <p th:text="${errorMessage}"></p>
+            </div>
+        </div>
+        
+        
+
         <div class="search-form">
             <h2>Search Contacts</h2>
-            <form th:action="@{/user/profile}" method="post">
+            <form th:action="@{/contact/search}" method="post">
                 <input type="text" name="firstName" placeholder="First Name" th:value="${searchFirstName}">
                 <input type="text" name="lastName" placeholder="Last Name" th:value="${searchLastName}">
                 <button type="submit">Search</button>
@@ -90,7 +106,7 @@
             <div class="modal-content">
                 <span onclick="closeContactForm()" class="close">&times;</span>
                 <h2>Create New Contact</h2>
-                <form th:action="@{/createContact}" method="post">
+                <form th:action="@{/contact/createContact}" method="post">
                     <label for="firstName">First Name:</label>
                     <input type="text" name="firstName" required><br>
                     <label for="lastName">Last Name:</label>
@@ -110,7 +126,7 @@
             <div class="modal-content">
                 <span onclick="closeEditContactForm()" class="close">&times;</span>
                 <h2>Edit Contact</h2>
-                <form id="edit-contact-form" th:action="@{/updateContact}" method="post">
+                <form id="edit-contact-form" th:action="@{/contact/updateContact}" method="post">
                     <input type="hidden" id="edit-contact-id" name="contactId">
                     <label for="edit-firstName">First Name:</label>
                     <input type="text" id="edit-firstName" name="firstName" required><br>
@@ -204,6 +220,12 @@
                     });
                 }
             }
+
+            function closeMessage(element) {
+                // Find the parent element (the message container) and hide it
+                element.parentElement.style.display = "none";
+            }
+
         </script>
     </body>
 </html>

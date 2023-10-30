@@ -8,11 +8,14 @@ import com.ose_abunaw.ose_abunaw.service.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import static org.mockito.ArgumentMatchers.eq;
-
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,9 +27,15 @@ import static org.mockito.Mockito.*;
 // tests for the primary user story functionality
 
 public class ContactControllerTests {
-    private ContactController contactController;
-    private ContactService contactService;
+
+    @Mock
     private UserService userService;
+
+    @Mock
+    private ContactService contactService;
+
+    @InjectMocks
+    private ContactController contactController;
 
     @BeforeEach
     public void setup() {
@@ -34,84 +43,56 @@ public class ContactControllerTests {
         contactService = mock(ContactService.class);
         userService = mock(UserService.class);
         contactController = new ContactController(contactService, userService);
+
     }
 
     @Test
     public void testCreateContact() {
-        // Arrange
-        Long userId = 1L;
-        String firstName = "Alice";
-        String lastName = "Smith";
-        String email = "alice@example.com";
-        String phoneNumber = "123-456-7890";
-
-        User mockUser = new User();
-        mockUser.setId(userId);
-
-        Contact mockContact = new Contact();
-        mockContact.setFirstName(firstName);
-        mockContact.setLastName(lastName);
-        mockContact.setEmail(email);
-        mockContact.setPhoneNumber(phoneNumber);
-
-        // Mock the behavior of userService.getUserById
-        when(userService.getUserById(userId)).thenReturn(mockUser);
-
-        // Mock the behavior of contactService.createContact with any Contact instance
-        when(contactService.createContact(eq(userId), any(Contact.class))).thenReturn(mockContact);
-
-        // Act
-        ResponseEntity<String> response = contactController.createContact(userId, firstName, lastName, email,
-                phoneNumber);
-
-        // Assert
-        verify(userService).getUserById(userId);
-        verify(contactService).createContact(eq(userId), any(Contact.class));
-
-        // Assert the response
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Contact created successfully", response.getBody());
-    }
-
-    @Test
-    public void testSearchContacts() {
         // Create a mock User
         User mockUser = new User();
         mockUser.setId(1L);
-        mockUser.setEmail("john@yahoo.com");
-        mockUser.setPassword("password");
 
-        // Create a list of mock Contact objects
-        List<Contact> mockContacts = List.of(
-                new Contact(null, "John", "Doe", "john.doe@example.com", "123-456-7890", mockUser),
-                new Contact(null, "Alice", "Smith", "alice.smith@example.com", "987-654-3210", mockUser));
+        // Mock the behavior of userService.getSignedInUser
+        when(userService.getSignedInUser()).thenReturn(mockUser);
 
-        // Create a ContactService with mock behavior
-        ContactService contactService = mock(ContactService.class);
-        when(contactService.searchContacts(anyLong(), anyString(), anyString())).thenReturn(mockContacts);
+        // Create a mock Contact
+        Contact mockContact = new Contact();
+        mockContact.setId(1L);
+        mockContact.setFirstName("Alice");
+        mockContact.setLastName("Smith");
+        mockContact.setEmail("alice@example.com");
+        mockContact.setPhoneNumber("123-456-7890");
+        // Mock the behavior of contactService.createContact
+        when(contactService.createContact(anyLong(), any(Contact.class))).thenReturn(mockContact);
 
-        // Create a ContactController
-        ContactController contactController = new ContactController(contactService, null);
+        // Create a mock RedirectAttributes
+        RedirectAttributes redirectAttributes = Mockito.mock(RedirectAttributes.class);
 
-        // Call the controller method with search parameters
-        ResponseEntity<List<Contact>> response = contactController.searchContacts(mockUser.getId(), "John", "Doe");
+        // Call the controller method
+        String result = contactController.createContact("Alice", "Smith", "alice@example.com", "123-456-7890",
+                Mockito.mock(Model.class), redirectAttributes);
 
         // Assertions
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(mockContacts, response.getBody());
+        verify(userService).getSignedInUser();
+        verify(contactService).createContact(anyLong(), any(Contact.class));
 
-        // Verify the service method was called
-        verify(contactService, times(1)).searchContacts(anyLong(), anyString(), anyString());
+        // Check if the result is the expected redirect
+        assertEquals("redirect:/user/profile", result);
+
+        // Check if the success message is added to redirect attributes
+        Mockito.verify(redirectAttributes).addFlashAttribute("successMessage", "Contact created successfully");
     }
 
     @Test
     public void testUpdateContact() {
-        // Create a mock User and Contact object
+        // Create a mock User
         User mockUser = new User();
         mockUser.setId(1L);
-        mockUser.setEmail("john@yahoo.com");
-        mockUser.setPassword("password");
 
+        // Mock the behavior of userService.getSignedInUser
+        when(userService.getSignedInUser()).thenReturn(mockUser);
+
+        // Create a mock Contact
         Contact mockContact = new Contact();
         mockContact.setId(1L);
         mockContact.setFirstName("Alice");
@@ -119,28 +100,25 @@ public class ContactControllerTests {
         mockContact.setEmail("alice@example.com");
         mockContact.setPhoneNumber("123-456-7890");
 
-        // Create a ContactService with mock behavior
-        ContactService contactService = mock(ContactService.class);
-
         // Mock the behavior of contactService.updateContact
-        when(contactService.updateContact(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong(),
-                ArgumentMatchers.any(Contact.class))).thenReturn(mockContact);
+        when(contactService.updateContact(anyLong(), anyLong(), any(Contact.class))).thenReturn(mockContact);
 
-        // Create a ContactController
-        ContactController contactController = new ContactController(contactService, null);
+        // Create a mock RedirectAttributes
+        RedirectAttributes redirectAttributes = Mockito.mock(RedirectAttributes.class);
 
         // Call the controller method
-        ResponseEntity<String> response = contactController.updateContact(mockUser.getId(), mockContact.getId(),
-                mockContact.getFirstName(), mockContact.getLastName(), mockContact.getEmail(),
-                mockContact.getPhoneNumber());
+        String result = contactController.updateContact(1L, "Alice", "Smith", "alice@example.com", "123-456-7890",
+                Mockito.mock(Model.class), redirectAttributes);
 
         // Assertions
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Contact updated successfully", response.getBody());
+        verify(userService).getSignedInUser();
+        verify(contactService).updateContact(anyLong(), anyLong(), any(Contact.class));
 
-        // Verify the service method was called
-        verify(contactService, times(1)).updateContact(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong(),
-                ArgumentMatchers.any(Contact.class));
+        // Check if the result is the expected redirect
+        assertEquals("redirect:/user/profile", result);
+
+        // Check if the success message is added to redirect attributes
+        Mockito.verify(redirectAttributes).addFlashAttribute("successMessage", "Contact updated successfully");
     }
 
     @Test
@@ -197,4 +175,57 @@ public class ContactControllerTests {
         verify(contactService, times(1)).getContactById(anyLong());
     }
 
+    @Test
+    public void testSearchContacts() {
+        // Create a mock User
+        User mockUser = new User();
+        mockUser.setId(1L);
+
+        // Mock the behavior of userService.getSignedInUser
+        when(userService.getSignedInUser()).thenReturn(mockUser);
+
+        // Create mock search criteria
+        String searchFirstName = "Alice";
+        String searchLastName = "Smith";
+
+        // Create a list of mock filtered contacts
+        List<Contact> filteredContacts = new ArrayList<>();
+        Contact mockContact1 = new Contact();
+        mockContact1.setId(1L);
+        mockContact1.setFirstName("Alice");
+        mockContact1.setLastName("Smith");
+        mockContact1.setEmail("alice@example.com");
+        mockContact1.setPhoneNumber("123-456-7890");
+        filteredContacts.add(mockContact1);
+
+        Contact mockContact2 = new Contact();
+        mockContact1.setId(1L);
+        mockContact1.setFirstName("James");
+        mockContact1.setLastName("Smith");
+        mockContact1.setEmail("james@example.com");
+        mockContact1.setPhoneNumber("123-456-7860");
+        filteredContacts.add(mockContact2);
+
+        // Mock the behavior of contactService.searchContacts
+        when(contactService.searchContacts(anyLong(), anyString(), anyString())).thenReturn(filteredContacts);
+
+        // Create a mock Model
+        Model model = Mockito.mock(Model.class);
+
+        // Call the controller method
+        String result = contactController.searchContacts(searchFirstName, searchLastName, model);
+
+        // Assertions
+        verify(userService).getSignedInUser();
+        verify(contactService).searchContacts(anyLong(), anyString(), anyString());
+
+        // Check if the model is populated with the expected attributes
+        verify(model).addAttribute("user", mockUser);
+        verify(model).addAttribute("filteredContacts", filteredContacts);
+        verify(model).addAttribute("searchFirstName", searchFirstName);
+        verify(model).addAttribute("searchLastName", searchLastName);
+
+        // Check if the result is the expected view name
+        assertEquals("user-profile", result);
+    }
 }

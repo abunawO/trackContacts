@@ -47,6 +47,39 @@
     color: #333;
 }
 
+/* CSS for the close button */
+.close-button {
+    position: absolute;
+    top: 206px;
+    right: 25px;
+    cursor: pointer;
+}
+
+/* Style the message container */
+.messages {
+    margin: 10px;
+    text-align: center;
+}
+
+/* Style the success message */
+.success-message {
+    background-color: #4CAF50; /* Green background color for success messages */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+/* Style the error message */
+.error-message {
+    background-color: #f44336; /* Red background color for error messages */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+
 /* Search form styles */
 .search-form {
     background-color: #fff;

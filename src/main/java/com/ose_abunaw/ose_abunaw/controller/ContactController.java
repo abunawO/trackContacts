@@ -1,8 +1,12 @@
 package com.ose_abunaw.ose_abunaw.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -11,8 +15,6 @@ import com.ose_abunaw.ose_abunaw.service.ContactService;
 import com.ose_abunaw.ose_abunaw.service.UserService;
 import com.ose_abunaw.ose_abunaw.model.User;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/contact")
 public class ContactController {
@@ -20,74 +22,79 @@ public class ContactController {
     private final ContactService contactService;
     private final UserService userService;
 
-    @Autowired
     public ContactController(ContactService contactService, UserService userService) {
         this.contactService = contactService;
         this.userService = userService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<String> createContact(
-            @RequestParam("userId") Long userId,
+    @PostMapping("/createContact")
+    public String createContact(
             @RequestParam("firstName") String firstName,
             @RequestParam("lastName") String lastName,
             @RequestParam("email") String email,
-            @RequestParam("phoneNumber") String phoneNumber) {
-        try {
-            // Fetch the user
-            User user = userService.getUserById(userId);
-            if (user == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-            }
+            @RequestParam("phone") String phone,
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
-            // Create a new contact using the builder pattern
-            Contact newContact = buildContact(firstName, lastName, email, phoneNumber, user);
+        // Retrieve the signed-in user's information
+        User user = userService.getSignedInUser();
 
-            Contact createdContact = contactService.createContact(userId, newContact);
+        if (user != null) {
+            // Create a new contact
+            Contact newContact = new Contact(null, firstName, lastName, email, phone, user);
+
+            // Save the new contact using the ContactService
+            Contact createdContact = contactService.createContact(user.getId(), newContact);
 
             if (createdContact != null) {
-                return ResponseEntity.status(HttpStatus.CREATED).body("Contact created successfully");
+                // Contact created successfully, add a success message and redirect to the user
+                // profile page
+                redirectAttributes.addFlashAttribute("successMessage", "Contact created successfully");
+                return "redirect:/user/profile";
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create contact");
+                // Handle the case where the user with the given ID is not found
+                return "error";
             }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create contact");
+        } else {
+            // Handle the case where the user is not signed in
+            return "error";
         }
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Contact>> searchContacts(
-            @RequestParam("userId") Long userId,
-            @RequestParam(value = "firstName", required = false) String firstName,
-            @RequestParam(value = "lastName", required = false) String lastName) {
-        try {
-            List<Contact> foundContacts = contactService.searchContacts(userId, firstName, lastName);
-            return ResponseEntity.ok(foundContacts);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @PostMapping("/update")
-    public ResponseEntity<String> updateContact(
-            @RequestParam("userId") Long userId,
+    // Add a new mapping for updating a contact
+    @PostMapping("/updateContact")
+    public String updateContact(
             @RequestParam("contactId") Long contactId,
             @RequestParam("firstName") String firstName,
             @RequestParam("lastName") String lastName,
             @RequestParam("email") String email,
-            @RequestParam("phoneNumber") String phoneNumber) {
-        try {
-            Contact updatedContact = buildContact(firstName, lastName, email, phoneNumber, null);
+            @RequestParam("phone") String phone,
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
-            Contact updated = contactService.updateContact(userId, contactId, updatedContact);
+        // Retrieve the signed-in user's information
+        User user = userService.getSignedInUser();
+
+        if (user != null) {
+            // Update the contact with the provided details
+            Contact updatedContact = new Contact(contactId, firstName, lastName, email, phone, user);
+            updatedContact.setId(contactId); // Set the ID of the contact to be updated
+
+            // Call the ContactService to update the contact
+            Contact updated = contactService.updateContact(user.getId(), contactId, updatedContact);
 
             if (updated != null) {
-                return ResponseEntity.status(HttpStatus.OK).body("Contact updated successfully");
+                // Redirect back to the user profile page
+                redirectAttributes.addFlashAttribute("successMessage", "Contact updated successfully");
+                return "redirect:/user/profile";
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update contact");
+                // Handle the case where the contact with the given ID is not found
+                return "error";
             }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update contact");
+
+        } else {
+            // Handle the case where the user is not signed in
+            return "error";
         }
     }
 
@@ -119,10 +126,30 @@ public class ContactController {
         }
     }
 
-    // Private utility method to create a Contact object to reduce redundancy
-    private Contact buildContact(String firstName, String lastName, String email, String phoneNumber, User user) {
-        return new Contact.Builder(firstName, lastName, email, phoneNumber)
-                .user(user) // Associate the contact with the user
-                .build();
+    @PostMapping("/search")
+    public String searchContacts(
+            @RequestParam("firstName") String searchFirstName,
+            @RequestParam("lastName") String searchLastName,
+            Model model) {
+        // Retrieve the signed-in user's information
+        User user = userService.getSignedInUser();
+
+        if (user != null) {
+            model.addAttribute("user", user);
+
+            // Search for contacts based on the criteria
+            List<Contact> filteredContacts = contactService.searchContacts(user.getId(), searchFirstName,
+                    searchLastName);
+            model.addAttribute("filteredContacts", filteredContacts);
+
+            // Populate search criteria to retain in the form
+            model.addAttribute("searchFirstName", searchFirstName);
+            model.addAttribute("searchLastName", searchLastName);
+
+            return "user-profile"; // Return the HTML template
+        } else {
+            // Handle the case where the user is not signed in
+            return "error";
+        }
     }
 }
