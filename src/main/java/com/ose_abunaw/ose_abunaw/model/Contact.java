@@ -91,35 +91,4 @@ public class Contact {
         this.user = user;
     }
 
-    // Builder pattern
-    public static class Builder {
-        private Long id;
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String phoneNumber;
-        private User user;
-
-        public Builder(String firstName, String lastName, String email, String phoneNumber) {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-            this.phoneNumber = phoneNumber;
-        }
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder user(User user) {
-            this.user = user;
-            return this;
-        }
-
-        public Contact build() {
-            return new Contact(id, firstName, lastName, email, phoneNumber, user);
-        }
-    }
-
 }
