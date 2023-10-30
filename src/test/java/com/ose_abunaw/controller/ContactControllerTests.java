@@ -21,6 +21,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+// tests for the primary user story functionality
+
 public class ContactControllerTests {
     private ContactController contactController;
     private ContactService contactService;
