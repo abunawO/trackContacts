@@ -1,7 +1,6 @@
 package com.ose_abunaw.ose_abunaw.service;
 
 import com.ose_abunaw.ose_abunaw.model.User;
-import com.ose_abunaw.ose_abunaw.model.Profile;
 import com.ose_abunaw.ose_abunaw.repository.ProfileRepository;
 import com.ose_abunaw.ose_abunaw.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +14,12 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
-
     // Create a field to store the signed-in user
     private User signedInUser;
 
     @Autowired
     public UserService(UserRepository userRepository, ProfileRepository profileRepository) {
         this.userRepository = userRepository;
-        this.profileRepository = profileRepository;
     }
 
     public User createUser(User user) {
@@ -41,24 +37,6 @@ public class UserService {
         }
 
         // User does not exist or the password is incorrect, return null
-        return null;
-    }
-
-    public User getUserProfile(Long userId) {
-        // Retrieve the user's profile information by their ID
-        return userRepository.findById(userId).orElse(null);
-    }
-
-    public Profile createUserProfile(Long userId, Profile profile) {
-        // Link the profile to the user
-        User user = userRepository.findById(userId).orElse(null);
-
-        if (user != null) {
-            profile.setUser(user);
-            return profileRepository.save(profile);
-        }
-
-        // Handle the case where the user does not exist
         return null;
     }
 
