@@ -1,10 +1,4 @@
-package com.ose_abunaw.controller;
-
-import com.ose_abunaw.ose_abunaw.controller.ContactController;
-import com.ose_abunaw.ose_abunaw.model.Contact;
-import com.ose_abunaw.ose_abunaw.model.User;
-import com.ose_abunaw.ose_abunaw.service.ContactService;
-import com.ose_abunaw.ose_abunaw.service.UserService;
+package com.abunaw_ose.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.abunaw_ose.abunaw_ose.controller.ContactController;
+import com.abunaw_ose.abunaw_ose.model.Contact;
+import com.abunaw_ose.abunaw_ose.model.User;
+import com.abunaw_ose.abunaw_ose.service.ContactService;
+import com.abunaw_ose.abunaw_ose.service.UserService;
+
 import java.util.ArrayList;
 import java.util.List;
 

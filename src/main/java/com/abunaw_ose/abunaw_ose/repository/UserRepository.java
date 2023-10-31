@@ -1,7 +1,8 @@
-package com.ose_abunaw.ose_abunaw.repository;
+package com.abunaw_ose.abunaw_ose.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.ose_abunaw.ose_abunaw.model.User;
+
+import com.abunaw_ose.abunaw_ose.model.User;
 
 import java.util.Optional;
 

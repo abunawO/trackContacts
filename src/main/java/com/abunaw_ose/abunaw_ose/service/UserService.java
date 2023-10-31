@@ -1,10 +1,11 @@
-package com.ose_abunaw.ose_abunaw.service;
+package com.abunaw_ose.abunaw_ose.service;
 
-import com.ose_abunaw.ose_abunaw.model.User;
-import com.ose_abunaw.ose_abunaw.repository.ProfileRepository;
-import com.ose_abunaw.ose_abunaw.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
+
+import com.abunaw_ose.abunaw_ose.model.User;
+import com.abunaw_ose.abunaw_ose.repository.ProfileRepository;
+import com.abunaw_ose.abunaw_ose.repository.UserRepository;
 
 import java.util.Optional;
 

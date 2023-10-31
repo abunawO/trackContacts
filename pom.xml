@@ -8,10 +8,10 @@
 		<version>3.1.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.ose_abunaw</groupId>
-	<artifactId>ose_abunaw</artifactId>
+	<groupId>com.abunaw_ose</groupId>
+	<artifactId>abunaw_ose</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ose_abunaw</name>
+	<name>abunaw_ose</name>
 	<description>Customer to track contacts</description>
 	<properties>
 		<java.version>11</java.version>

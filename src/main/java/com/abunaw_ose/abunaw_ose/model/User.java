@@ -1,4 +1,4 @@
-package com.ose_abunaw.ose_abunaw.model;
+package com.abunaw_ose.abunaw_ose.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

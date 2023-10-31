@@ -1,19 +1,19 @@
-package com.ose_abunaw.ose_abunaw.controller;
+package com.abunaw_ose.abunaw_ose.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.abunaw_ose.abunaw_ose.model.Contact;
+import com.abunaw_ose.abunaw_ose.model.User;
+import com.abunaw_ose.abunaw_ose.service.ContactService;
+import com.abunaw_ose.abunaw_ose.service.UserService;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import com.ose_abunaw.ose_abunaw.model.Contact;
-import com.ose_abunaw.ose_abunaw.service.ContactService;
-import com.ose_abunaw.ose_abunaw.service.UserService;
-import com.ose_abunaw.ose_abunaw.model.User;
 
 @Controller
 @RequestMapping("/contact")

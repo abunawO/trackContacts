@@ -1,4 +1,4 @@
-package com.ose_abunaw.ose_abunaw.controller;
+package com.abunaw_ose.abunaw_ose.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.ose_abunaw.ose_abunaw.model.User;
-import com.ose_abunaw.ose_abunaw.service.UserService;
+
+import com.abunaw_ose.abunaw_ose.model.User;
+import com.abunaw_ose.abunaw_ose.service.UserService;
 
 @Controller
 @RequestMapping("/users")

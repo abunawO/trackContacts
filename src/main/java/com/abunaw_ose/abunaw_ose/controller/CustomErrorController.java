@@ -1,4 +1,4 @@
-package com.ose_abunaw.ose_abunaw.controller;
+package com.abunaw_ose.abunaw_ose.controller;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
