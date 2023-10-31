@@ -57,8 +57,8 @@
                         <th>Last Name</th>
                         <th>Email</th>
                         <th>Phone Number</th>
-                        <th>Contact ID</th>
                         <th>Actions</th>
+                        <th colspan="2">Actions</th> <!-- Set colspan to 2 for the Actions header -->
                     </tr>
                 </thead>
                 <tbody>
@@ -69,7 +69,6 @@
                             <td th:text="${contact.lastName}">Last Name</td>
                             <td th:text="${contact.email}">Email</td>
                             <td th:text="${contact.phoneNumber}">Phone Number</td>
-                            <td th:text="${contact.id}">Contact ID</td>
                             <td>
                                 <button th:attr="data-contact-id=${contact.id}" onclick="populateEditForm(this.getAttribute('data-contact-id'))">Edit</button>
                             </td>
@@ -85,7 +84,6 @@
                             <td th:text="${contact.lastName}">Last Name</td>
                             <td th:text="${contact.email}">Email</td>
                             <td th:text="${contact.phoneNumber}">Phone Number</td>
-                            <td th:text="${contact.id}">Contact ID</td>
                             <td>
                                 <button th:attr="data-contact-id=${contact.id}" onclick="populateEditForm(this.getAttribute('data-contact-id'))">Edit</button>
                             </td>
@@ -114,7 +112,7 @@
                     <label for="email">Email:</label>
                     <input type="email" name="email" required><br>
                     <label for="phone">Phone Number:</label>
-                    <input type="text" name="phone" required><br>
+                    <input type="text" name="phone" required pattern="[0-9]+" title="Please enter a valid phone number (numeric characters only)"><br>
                     <button type="submit">Create</button>
                     <button type="button" onclick="closeContactForm()">Cancel</button>
                 </form>
@@ -135,7 +133,7 @@
                     <label for="edit-email">Email:</label>
                     <input type="email" id="edit-email" name="email" required><br>
                     <label for="edit-phone">Phone Number:</label>
-                    <input type="text" id="edit-phone" name="phone" required><br>
+                    <input type="text" id="edit-phone" name="phone" required pattern="[0-9]+" title="Please enter a valid phone number (numeric characters only)"><br>
                     <button type="button" onclick="closeEditContactForm()">Cancel</button>
                     <button type="submit">Save</button>
                 </form>

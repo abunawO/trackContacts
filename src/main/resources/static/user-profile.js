@@ -80,3 +80,19 @@ function closeMessage(element) {
     // Find the parent element (the message container) and hide it
     element.parentElement.style.display = "none";
 }
+
+function validatePhoneNumber(form) {
+    var phoneNumberField = form.querySelector('input[name="phone"]');
+    var phoneNumber = phoneNumberField.value;
+
+    // Regular expression to match numeric characters
+    var numericPattern = /^[0-9]+$/;
+
+    if (!numericPattern.test(phoneNumber)) {
+        alert("Please enter a valid phone number (numeric characters only).");
+        phoneNumberField.focus();
+        return false;
+    }
+
+    return true;
+}
